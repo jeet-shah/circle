@@ -1,45 +1,21 @@
-var ball,position,database;
+var gameState = 0,playerCount,form,player,game,database,allPlayers,car1,car2,car3,car4,cars;
 
 function setup(){
-    createCanvas(500,500);
+    createCanvas(displayWidth - 20,displayHeight - 30);
     database = firebase.database();
-    ball = createSprite(250,250,10,10);
-    ball.shapeColor = "red";
-    var ballref = database.ref('ball/position');
-    ballref.on("value",readPosition,showError);
+    game = new Game();
+    game.getState();
+    game.start();  
 }
 
 function draw(){
     background("white");
-    if (position !== undefined){
-    if(keyDown(LEFT_ARROW)){
-        changePosition(-1,0);
+    if(playerCount === 4){
+        game.update(1);        
     }
-    else if(keyDown(RIGHT_ARROW)){
-        changePosition(1,0);
+    if (gameState === 1){
+        clear();
+        game.play();
     }
-    else if(keyDown(UP_ARROW)){
-        changePosition(0,-1);
-    }
-    else if(keyDown(DOWN_ARROW)){
-        changePosition(0,+1);
-    }
-}
-    drawSprites();
-}
-function readPosition(data){
-    position = data.val();
-    ball.x = position.x;
-    ball.y = position.y;
-}
-
-function changePosition(x,y){
-    database.ref('ball/position').set({
-        'x': position.x+x,
-        'y': position.y+y
-    })    
-}
-function showError(){
-    console.log("database error")
 }
    
